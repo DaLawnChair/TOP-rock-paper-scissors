@@ -1,10 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Rock Paper Scissors!</title>
-        <script src="scripts.js"></script>
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors!</title>
+    <script src="scripts.js" defer></script>
+</head>
+
+<body>
+    <h1>Rock, Paper, Scissors!</h1>
+    
+    <div id="ingame-container">
+        <h2>Select your option!</h2>
+        <button class="option" id="0">Rock</button>
+        <button class="option" id="1">Paper</button>
+        <button class="option" id="2">Scissors</button>
+    </div>
+    
+    <div id="endgame-container">
+        <h2>Game Over!</h2>
+        <button id="continue">Continue playing?</button>
+        <button id="reset">Reset game?</button>
+    </div>
+        
+    <div id="results-Container">
+        <h2>Results:</h2>
+        <p id="resultsDisplay"></p>
+    </div>
+</body>
 </html>

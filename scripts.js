@@ -1,4 +1,3 @@
-
 let options = {"rock":0,
                 "paper":1,
                 "scissors":2
@@ -10,6 +9,7 @@ let playerWins=0;
 let computerWins=0;
 let roundCount=0;
 let result;
+let keepPlaying=false;
 
 function getKeyByValue(value)
 {
@@ -20,6 +20,7 @@ function getKeyByValue(value)
             return key;
         }
     }
+    return false;
 }
 function getRandomSelection()
 {
@@ -46,49 +47,42 @@ function figureOutWinner(playerSelection,computerSelection,losingOption,winningO
 }
 function playRound(playerSelection,computerSelection)
 {
+    ++roundCount;
     if (options[playerSelection] == options[computerSelection])
     {
-        return `Both are ${playerSelection}! No points!`;
+        result = `Both are ${playerSelection}! No points!`;
     }
     else if (playerSelection=="rock" && computerSelection=="paper" || playerSelection=="paper" && computerSelection=="rock")
     {
-        return figureOutWinner(playerSelection,computerSelection,"rock","paper");
+        result = figureOutWinner(playerSelection,computerSelection,"rock","paper");
     }
     else if (playerSelection=="paper" && computerSelection=="scissors" || playerSelection=="scissors" && computerSelection=="paper")
     {
-        return figureOutWinner(playerSelection,computerSelection,"paper","scissors");
+        result = figureOutWinner(playerSelection,computerSelection,"paper","scissors");
     }
     else if (playerSelection=="scissors" && computerSelection=="rock" || playerSelection=="rock" && computerSelection=="scissors")
     {
-        return figureOutWinner(playerSelection,computerSelection,"scissors","rock");
+        result = figureOutWinner(playerSelection,computerSelection,"scissors","rock");
     }
 }
 
-function playerSelectionInput(message = "Enter your selection of rock, paper, or scissors below:")
+function playerSelectionInput()
 {
-    
-    playerSelection = prompt(message);
-    //Prevents the user from cancelling the prompt
-    if (playerSelection==null)
+    if(getKeyByValue(this.id))
     {
-        playerSelectionInput("Error: Please enter a valid option!\nEnter your selection of rock, paper, or scissors below:")
-    }
-    
-    playerSelection = playerSelection.toLowerCase();  
-    if(options[playerSelection] == undefined)
-    {
-        playerSelectionInput("Error: Please enter a valid option!\nEnter your selection of rock, paper, or scissors below:");
+        playerSelection = getKeyByValue(this.id);
+        game();
     }
 }
 
 function roundResults()
 {
-    alert(
+    return (
             `Round Count: ${roundCount}     Your wins: ${playerWins}     Computer wins: ${computerWins}
             \nYour selection: ${playerSelection} 
             \nComputer selection: ${computerSelection}\n\n` + 
             result
-        );
+           );
 }
 function gameOver()
 {
@@ -106,20 +100,61 @@ function gameOver()
         message = `The game ends in a tie!\nYour wins: ${playerWins}     Computer wins: ${computerWins}`;
     }
     message += "\nThanks for playing!";
-    alert(message);
+    bod.insertBefore(endgameContainer,resultsContainer);
+    bod.removeChild(ingameContainer);
+    return message;
 }
 
 function game()
 {
-    for(let gameCount=0;gameCount<5;gameCount++)
+    if (roundCount==0 || roundCount%5 != 0 || keepPlaying)
     {
-        roundCount++;
-        playerSelectionInput();
         getComputerChoice();
-        result = playRound(playerSelection,computerSelection);
-        roundResults();
+        playRound(playerSelection,computerSelection);
+        resultsDisplay.innerText = roundResults();
+        keepPlaying = false; //Ensures the end game page will show
     }
-    gameOver();
+    else
+    {
+        resultsDisplay.innerText = gameOver();
+        keepPlaying = false;
+    }
 }
-//Plays the game
-game();
+
+function resetGame()
+{
+    computerSelection;
+    playerSelection;
+    playerWins=0;
+    computerWins=0;
+    roundCount=0;
+    result;
+    resultsDisplay.innerText ="";
+    keepPlaying = false;
+    bod.insertBefore(ingameContainer,resultsContainer);
+    bod.removeChild(endgameContainer);
+}
+function continueGame()
+{
+    computerSelection;
+    playerSelection;
+    resultsDisplay.innerText ="";
+    keepPlaying = true;
+    bod.insertBefore(ingameContainer,resultsContainer);
+    bod.removeChild(endgameContainer);
+}
+const resultDisplay = document.querySelector('#resultsDisplay');
+const userGameOption = Array.from(document.querySelectorAll('.option'));
+const ingameContainer = document.querySelector('#ingame-container');
+const endgameContainer = document.querySelector('#endgame-container');
+const resultsContainer = document.querySelector('#results-Container');
+const userContinue = document.querySelector('#continue');
+const userReset = document.querySelector('#reset');
+const bod = document.querySelector('body');
+
+userGameOption.forEach(option => option.addEventListener('click', playerSelectionInput)); 
+userContinue.addEventListener('click', continueGame);
+userReset.addEventListener('click',resetGame);
+
+bod.insertBefore(ingameContainer,resultsContainer);
+bod.removeChild(endgameContainer);
